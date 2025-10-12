@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Analyse Yin/Yang et 5 éléments</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 700px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #f9f9f9;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+
+    h1 { text-align: center; color: #333; }
+    label { font-weight: bold; display: block; margin-top: 10px; }
+    input, button {
+      width: 100%; padding: 10px; margin-top: 5px;
+      border: 1px solid #ccc; border-radius: 6px;
+      font-size: 1rem;
+    }
+    button {
+      margin-top: 15px; background: #333; color: white;
+      cursor: pointer; transition: 0.3s;
+    }
+    button:hover { background: #555; }
+
+    .result {
+      background: white;
+      margin-top: 20px;
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid #eee;
+    }
+
+    .energy {
+      font-weight: bold;
+      font-size: 1.2rem;
+      padding: 5px 10px;
+      border-radius: 8px;
+      display: inline-block;
+      margin-bottom: 10px;
+      color: white;
+    }
+
+    .Yin { background-color: #3498db; }
+    .Yang { background-color: #e67e22; }
+
+    .element {
+      display: inline-block;
+      margin-bottom: 10px;
+      font-weight: bold;
+      padding: 5px 10px;
+      border-radius: 8px;
+      color: white;
+    }
+
+    .Bois { background-color: #2ecc71; }
+    .Feu { background-color: #e74c3c; }
+    .Terre { background-color: #f1c40f; color: #333; }
+    .M�tal { background-color: #95a5a6; }
+    .Eau { background-color: #3498db; }
+
+    ul { margin-top: 5px; }
+  </style>
+</head>
+<body>
+  <h1>Analyse Yin/Yang et 5 éléments</h1>
+
+  <form id="form">
+    <label>Date de naissance :</label>
+    <input type="date" id="birthDate" required />
+
+    <label>Heure de naissance :</label>
+    <input type="time" id="birthTime" required />
+
+    <label>Lieu de naissance :</label>
+    <input type="text" id="birthPlace" required />
+
+    <label>Date dʹanalyse :</label>
+    <input type="date" id="targetDate" required />
+
+    <button type="submit">Analyser</button>
+  </form>
+
+  <div class="result" id="result"></div>
+
+  <script>
+    const form = document.getElementById("form");
+    const resultDiv = document.getElementById("result");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const data = {
+        birthDate: document.getElementById("birthDate").value,
+        birthTime: document.getElementById("birthTime").value,
+        birthPlace: document.getElementById("birthPlace").value,
+        targetDate: document.getElementById("targetDate").value
+      };
+
+      const res = await fetch("/api/analyse", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+
+      const result = await res.json();
+
+      if (result.error) {
+        resultDiv.innerHTML = `<p style="color:red;">${result.error}</p>`;
+        return;
+      }
+
+      resultDiv.innerHTML = `
+        <div>
+          <div class="energy ${result.energy}">Énergie dominante : ${result.energy}</div>
+          <div class="element ${result.element}">Élément : ${result.element}</div>
+          <p>Zodiaque : <strong>${result.zodiaque}</strong></p>
+          <p><strong>Interprétation :</strong> ${result.interpretation}</p>
+          <h3>Conseils :</h3>
+          <ul>${result.conseils.map(c => `<li>${c}</li>`).join("")}</ul>
+        </div>
+      `;
+    });
+  </script>
+</body>
+</html>
