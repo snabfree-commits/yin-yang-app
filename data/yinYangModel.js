@@ -44,6 +44,21 @@ function getImagePath(element, yinYang) {
   return "";
 }
 
+function getPurchaseLink(element, yinYang) {
+  // Liens fournis — normalization vers https
+  if (element === "Bois" && yinYang === "Yang") return "https://smart360.fr/boutique-2/";
+  if (element === "Bois" && yinYang === "Yin") return "https://smart360.fr/produit/snab-dessin-yin-yang-074/";
+  if (element === "Feu" && yinYang === "Yang") return "https://smart360.fr/produit/snab-dessin-yin-yang-083/";
+  if (element === "Feu" && yinYang === "Yin") return "https://smart360.fr/produit/snab-carte-postale-dessin-yin-yang-005/";
+  if (element === "Terre" && yinYang === "Yang") return "https://smart360.fr/produit/snab-dessin-yin-yang-013/";
+  if (element === "Terre" && yinYang === "Yin") return "https://smart360.fr/produit/snab-dessin-yin-yang-051/";
+  if (element === "Métal" && yinYang === "Yang") return "https://smart360.fr/produit/snab-dessin-yin-yang-013/";
+  if (element === "Métal" && yinYang === "Yin") return "https://smart360.fr/produit/snab-dessin-yin-yang-059/";
+  if (element === "Eau" && yinYang === "Yang") return "https://smart360.fr/produit/snab-dessin-yin-yang-065/";
+  if (element === "Eau" && yinYang === "Yin") return "https://smart360.fr/produit/snab-dessin-yin-yang-066/";
+  return "https://smart360.fr/boutique-2/";
+}
+
 /**
  * Analyse Yin/Yang + élément + zodiaque
  */
@@ -68,6 +83,8 @@ export function getYinYangAnalysis(birthDate, birthTime, birthPlace, targetDate)
   let interpretation = "";
   let conseils = [];
   let image = getImagePath(tronc.element, tronc.yinYang);
+  const purchaseLink = getPurchaseLink(tronc.element, tronc.yinYang);
+  const galleryLink = "https://smart360.fr/boutique-2/";
 
   switch (tronc.element) {
     case "Bois":
@@ -123,6 +140,8 @@ export function getYinYangAnalysis(birthDate, birthTime, birthPlace, targetDate)
     zodiaque: animal,
     interpretation,
     conseils,
-    image // Ajout de l'image au résultat
+    image,        // chemin de l'image
+    purchaseLink, // lien 'acheter' pour cette image
+    galleryLink   // lien 'voir la galerie'
   };
 }

@@ -130,7 +130,7 @@
     .Bois { background-color: #2ecc71; }
     .Feu { background-color: #e74c3c; }
     .Terre { background-color: #f1c40f; color: #333; }
-    .Métal, .M�tal { background-color: #95a5a6; }
+    .Métal, .Metal { background-color: #95a5a6; }
     .Eau { background-color: #3498db; }
     ul { margin-top: 5px; }
     .result-image {
@@ -141,6 +141,27 @@
       border-radius: 10px;
       box-shadow: 0 0 8px #222;
     }
+
+    /* Boutons achat / galerie */
+    .action-row {
+      display:flex;
+      gap:12px;
+      margin-top:14px;
+      flex-wrap:wrap;
+      justify-content: center; /* centrer horizontalement */
+      align-items: center;     /* centrer verticalement */
+    }
+    .btn-buy, .btn-gallery {
+      display:inline-block;
+      padding:10px 14px;
+      border-radius:8px;
+      color:#fff;
+      text-decoration:none;
+      font-weight:600;
+    }
+    .btn-buy { background:#e67e22; }
+    .btn-gallery { background:#3498db; }
+
     @media (max-width: 600px) {
       h1 { font-size: 1.3em; }
       .intro { font-size: 1em; padding: 0.7em 0.5em; }
@@ -229,6 +250,7 @@
         return;
       }
 
+      // affichage résultat avec image + boutons acheter / voir la galerie
       resultDiv.innerHTML = `
         <div>
           <p style="font-size:1.2em;"><strong>${prenom}</strong>, ton signe du Zodiaque est : <strong>${result.zodiaque}</strong></p>
@@ -238,6 +260,10 @@
           <h3>Conseils :</h3>
           <ul>${result.conseils.map(c => `<li>${c}</li>`).join("")}</ul>
           ${result.image ? `<img src="${result.image}" alt="${result.element} ${result.energy}" class="result-image" />` : ""}
+          <div class="action-row">
+            ${result.purchaseLink ? `<a href="${result.purchaseLink}" target="_blank" rel="noopener" class="btn-buy">Acheter</a>` : `<a href="https://smart360.fr/boutique-2/" target="_blank" rel="noopener" class="btn-gallery">Voir la galerie</a>`}
+            ${result.galleryLink ? `<a href="${result.galleryLink}" target="_blank" rel="noopener" class="btn-gallery">Voir la galerie</a>` : ""}
+          </div>
         </div>
       `;
     });
