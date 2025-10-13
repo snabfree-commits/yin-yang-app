@@ -2,39 +2,53 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>Analyse Yin/Yang et 5 éléments</title>
+  <title>Application Yin Yang – Équilibre énergétique personnel</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       max-width: 700px;
       margin: 40px auto;
       padding: 20px;
-      background: #f9f9f9;
+      background: #000;
+      color: #fff;
       border-radius: 12px;
       box-shadow: 0 0 15px rgba(0,0,0,0.1);
     }
-
-    h1 { text-align: center; color: #333; }
-    label { font-weight: bold; display: block; margin-top: 10px; }
+    h1 {
+      text-align: center;
+      color: #fff;
+      font-size: 2rem;
+      margin-bottom: 0.5em;
+    }
+    .intro {
+      margin-bottom: 2em;
+      background: #111;
+      padding: 1em 1.5em;
+      border-radius: 10px;
+      box-shadow: 0 0 8px #222;
+      font-size: 1.08em;
+    }
+    label { font-weight: bold; display: block; margin-top: 10px; color: #fff; }
     input, button {
       width: 100%; padding: 10px; margin-top: 5px;
-      border: 1px solid #ccc; border-radius: 6px;
+      border: 1px solid #444; border-radius: 6px;
       font-size: 1rem;
+      background: #222;
+      color: #fff;
     }
     button {
       margin-top: 15px; background: #333; color: white;
       cursor: pointer; transition: 0.3s;
     }
     button:hover { background: #555; }
-
     .result {
-      background: white;
+      background: #111;
       margin-top: 20px;
       padding: 20px;
       border-radius: 12px;
-      border: 1px solid #eee;
+      border: 1px solid #222;
+      color: #fff;
     }
-
     .energy {
       font-weight: bold;
       font-size: 1.2rem;
@@ -44,10 +58,8 @@
       margin-bottom: 10px;
       color: white;
     }
-
     .Yin { background-color: #3498db; }
     .Yang { background-color: #e67e22; }
-
     .element {
       display: inline-block;
       margin-bottom: 10px;
@@ -56,18 +68,33 @@
       border-radius: 8px;
       color: white;
     }
-
     .Bois { background-color: #2ecc71; }
     .Feu { background-color: #e74c3c; }
     .Terre { background-color: #f1c40f; color: #333; }
-    .M�tal { background-color: #95a5a6; }
+    .Métal, .M�tal { background-color: #95a5a6; }
     .Eau { background-color: #3498db; }
-
     ul { margin-top: 5px; }
   </style>
 </head>
 <body>
-  <h1>Analyse Yin/Yang et 5 éléments</h1>
+  <h1>Application Yin Yang – Équilibre énergétique personnel</h1>
+  <div class="intro">
+    <p>
+      Cette application vous permet d’explorer votre équilibre Yin/Yang à un moment donné, selon vos données de naissance (date, heure, lieu) et la date du jour (ou une autre date de votre choix).<br>
+      Inspirée des principes de la philosophie chinoise et du cycle des 5 éléments (Bois, Feu, Terre, Métal, Eau), elle calcule votre tendance énergétique du moment et vous propose :
+    </p>
+    <ul>
+      <li>🌗 Une interprétation symbolique de votre équilibre Yin/Yang</li>
+      <li>🌱 Des conseils personnalisés pour harmoniser vos énergies selon le contexte du jour</li>
+    </ul>
+    <p>
+      Entrez vos informations, laissez l’application faire son calcul, et découvrez comment retrouver un équilibre intérieur entre calme et dynamisme, réflexion et action.
+    </p>
+    <p>
+      🖌️ Et cerise sur le gong : une carte dessinée par l’artiste snab apparaîtra avec votre résultat !<br>
+      Elle illustre votre énergie du moment — entre Yin rêveur et Yang survolté — avec la subtilité d’un pinceau…
+    </p>
+  </div>
 
   <form id="form">
     <label>Date de naissance :</label>
@@ -122,6 +149,7 @@
           <p><strong>Interprétation :</strong> ${result.interpretation}</p>
           <h3>Conseils :</h3>
           <ul>${result.conseils.map(c => `<li>${c}</li>`).join("")}</ul>
+          ${result.image ? `<img src="${result.image}" alt="${result.element} ${result.energy}" style="display:block;margin:25px auto 0 auto;max-width:300px;border-radius:10px;box-shadow:0 0 8px #222;" />` : ""}
         </div>
       `;
     });

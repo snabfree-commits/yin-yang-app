@@ -28,6 +28,23 @@ function getZodiaque(year) {
 }
 
 /**
+ * Retourne le chemin de l'image selon l'élément et le Yin/Yang
+ */
+function getImagePath(element, yinYang) {
+  if (element === "Bois" && yinYang === "Yang") return "/images/1-bois-yang-0000.jpg";
+  if (element === "Bois" && yinYang === "Yin") return "/images/2-bois-yin-074.jpg";
+  if (element === "Feu" && yinYang === "Yang") return "/images/3-feu-yang-083.jpg";
+  if (element === "Feu" && yinYang === "Yin") return "/images/4-feu-yin-005.jpg";
+  if (element === "Terre" && yinYang === "Yang") return "/images/5-terre-yang-013.jpg";
+  if (element === "Terre" && yinYang === "Yin") return "/images/6-terre-yin-051.jpg";
+  if (element === "Métal" && yinYang === "Yang") return "/images/7-metal-yang-065.jpg";
+  if (element === "Métal" && yinYang === "Yin") return "/images/8-metal-yin-59.jpg";
+  if (element === "Eau" && yinYang === "Yang") return "/images/9-eau-metal-065.jpg";
+  if (element === "Eau" && yinYang === "Yin") return "/images/10-eau-yin-066.jpg";
+  return "";
+}
+
+/**
  * Analyse Yin/Yang + élément + zodiaque
  */
 export function getYinYangAnalysis(birthDate, birthTime, birthPlace, targetDate) {
@@ -50,6 +67,7 @@ export function getYinYangAnalysis(birthDate, birthTime, birthPlace, targetDate)
   // Interprétation et conseils selon élément + Yin/Yang
   let interpretation = "";
   let conseils = [];
+  let image = getImagePath(tronc.element, tronc.yinYang);
 
   switch (tronc.element) {
     case "Bois":
@@ -104,6 +122,7 @@ export function getYinYangAnalysis(birthDate, birthTime, birthPlace, targetDate)
     energy: tronc.yinYang,
     zodiaque: animal,
     interpretation,
-    conseils
+    conseils,
+    image // Ajout de l'image au résultat
   };
 }
