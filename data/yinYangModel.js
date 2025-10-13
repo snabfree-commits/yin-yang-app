@@ -39,7 +39,7 @@ function getImagePath(element, yinYang) {
   if (element === "Terre" && yinYang === "Yin") return "/images/6-terre-yin-051.jpg";
   if (element === "Métal" && yinYang === "Yang") return "/images/7-metal-yang-065.jpg";
   if (element === "Métal" && yinYang === "Yin") return "/images/8-metal-yin-59.jpg";
-  if (element === "Eau" && yinYang === "Yang") return "/images/9-eau-metal-065.jpg";
+  if (element === "Eau" && yinYang === "Yang") return "/images/9-eau-yang-065.jpg";
   if (element === "Eau" && yinYang === "Yin") return "/images/10-eau-yin-066.jpg";
   return "";
 }
