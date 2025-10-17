@@ -7,9 +7,15 @@ const app = express();
 app.use(bodyParser.json());
 app.use(express.static("public"));
 
-// Forcer UTF-8 pour les réponses JSON
+// Configuration des headers
 app.use((req, res, next) => {
   res.setHeader("Content-Type", "application/json; charset=utf-8");
+  // Ã‰viter la mise en cache pour les API
+  if (req.url.startsWith('/api/')) {
+    res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+    res.setHeader("Pragma", "no-cache");
+    res.setHeader("Expires", "0");
+  }
   next();
 });
 
@@ -22,7 +28,7 @@ app.post("/api/analyse", (req, res) => {
   res.end(JSON.stringify(analysis));
 });
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`?? Serveur lancé sur http://localhost:${PORT}`);
+  console.log(`ðŸš€ Serveur lancÃ© sur le port ${PORT}`);
 });
