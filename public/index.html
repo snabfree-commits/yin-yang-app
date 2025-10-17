@@ -216,56 +216,93 @@
   </div>
 
   <script>
+    // Empêcher les requêtes non autorisées
+    const originalFetch = window.fetch;
+    window.fetch = function(...args) {
+      const url = args[0];
+      // Bloquer les requêtes vers localhost (sauf si c'est notre propre domaine)
+      if (typeof url === 'string' && url.includes('localhost') && !url.startsWith(window.location.origin)) {
+        console.warn('Requête bloquée vers:', url);
+        return Promise.reject(new Error('Requête non autorisée vers localhost'));
+      }
+      // Bloquer les API externes non autorisées
+      if (typeof url === 'string' && url.includes('/api/gemini')) {
+        console.warn('Requête bloquée vers API Gemini:', url);
+        return Promise.reject(new Error('API Gemini non disponible'));
+      }
+      return originalFetch.apply(this, args);
+    };
+
     const form = document.getElementById("form");
     const resultDiv = document.getElementById("result");
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
 
-      // On reconstruit la date de naissance à partir des champs numériques
-      const birthYear = document.getElementById("birthYear").value.padStart(4, '0');
-      const birthMonth = document.getElementById("birthMonth").value.padStart(2, '0');
-      const birthDay = document.getElementById("birthDay").value.padStart(2, '0');
-      const birthDate = `${birthYear}-${birthMonth}-${birthDay}`;
-      const prenom = document.getElementById("prenom").value;
+      try {
+        // On reconstruit la date de naissance à partir des champs numériques
+        const birthYear = document.getElementById("birthYear").value.padStart(4, '0');
+        const birthMonth = document.getElementById("birthMonth").value.padStart(2, '0');
+        const birthDay = document.getElementById("birthDay").value.padStart(2, '0');
+        const birthDate = `${birthYear}-${birthMonth}-${birthDay}`;
+        const prenom = document.getElementById("prenom").value;
 
-      const data = {
-        prenom,
-        birthDate,
-        birthTime: document.getElementById("birthTime").value,
-        birthPlace: document.getElementById("birthPlace").value,
-        targetDate: document.getElementById("targetDate").value
-      };
+        const data = {
+          prenom,
+          birthDate,
+          birthTime: document.getElementById("birthTime").value,
+          birthPlace: document.getElementById("birthPlace").value,
+          targetDate: document.getElementById("targetDate").value
+        };
 
-      const res = await fetch("/api/analyse", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-      });
+        console.log("Envoi de la requête vers:", window.location.origin + "/api/analyse");
+        
+        const res = await fetch(window.location.origin + "/api/analyse", {
+          method: "POST",
+          headers: { 
+            "Content-Type": "application/json",
+            "Cache-Control": "no-cache"
+          },
+          body: JSON.stringify(data)
+        });
 
-      const result = await res.json();
+        if (!res.ok) {
+          throw new Error(`Erreur HTTP: ${res.status} - ${res.statusText}`);
+        }
 
-      if (result.error) {
-        resultDiv.innerHTML = `<p style="color:red;">${result.error}</p>`;
-        return;
-      }
+        const result = await res.json();
 
-      // affichage résultat avec image + boutons acheter / voir la galerie
-      resultDiv.innerHTML = `
-        <div>
-          <p style="font-size:1.2em;"><strong>${prenom}</strong>, ton signe du Zodiaque est : <strong>${result.zodiaque}</strong></p>
-          <div class="energy ${result.energy}">Énergie dominante : ${result.energy}</div>
-          <div class="element ${result.element}">Élément : ${result.element}</div>
-          <p><strong>Interprétation :</strong> ${result.interpretation}</p>
-          <h3>Conseils :</h3>
-          <ul>${result.conseils.map(c => `<li>${c}</li>`).join("")}</ul>
-          ${result.image ? `<img src="${result.image}" alt="${result.element} ${result.energy}" class="result-image" />` : ""}
-          <div class="action-row">
-            ${result.purchaseLink ? `<a href="${result.purchaseLink}" target="_blank" rel="noopener" class="btn-buy">Acheter</a>` : `<a href="https://smart360.fr/boutique-2/" target="_blank" rel="noopener" class="btn-gallery">Voir la galerie</a>`}
-            ${result.galleryLink ? `<a href="${result.galleryLink}" target="_blank" rel="noopener" class="btn-gallery">Voir la galerie</a>` : ""}
+        if (result.error) {
+          resultDiv.innerHTML = `<p style="color:red;">${result.error}</p>`;
+          return;
+        }
+
+        // affichage résultat avec image + boutons acheter / voir la galerie
+        resultDiv.innerHTML = `
+          <div>
+            <p style="font-size:1.2em;"><strong>${prenom}</strong>, ton signe du Zodiaque est : <strong>${result.zodiaque}</strong></p>
+            <div class="energy ${result.energy}">Énergie dominante : ${result.energy}</div>
+            <div class="element ${result.element}">Élément : ${result.element}</div>
+            <p><strong>Interprétation :</strong> ${result.interpretation}</p>
+            <h3>Conseils :</h3>
+            <ul>${result.conseils.map(c => `<li>${c}</li>`).join("")}</ul>
+            ${result.image ? `<img src="${result.image}" alt="${result.element} ${result.energy}" class="result-image" />` : ""}
+            <div class="action-row">
+              ${result.purchaseLink ? `<a href="${result.purchaseLink}" target="_blank" rel="noopener" class="btn-buy">Acheter</a>` : `<a href="https://smart360.fr/boutique-2/" target="_blank" rel="noopener" class="btn-gallery">Voir la galerie</a>`}
+              ${result.galleryLink ? `<a href="${result.galleryLink}" target="_blank" rel="noopener" class="btn-gallery">Voir la galerie</a>` : ""}
+            </div>
           </div>
-        </div>
-      `;
+        `;
+      } catch (error) {
+        console.error("Erreur lors de la requête:", error);
+        resultDiv.innerHTML = `
+          <p style="color:red;">
+            <strong>Erreur:</strong> Impossible de contacter le serveur. 
+            <br>Détails: ${error.message}
+            <br>Veuillez réessayer dans quelques instants.
+          </p>
+        `;
+      }
     });
   </script>
 </body>
